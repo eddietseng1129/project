@@ -10,26 +10,35 @@
         <input type="text" name="itemDescription" placeholder="Description" value="">
         <input type="file" name="file" placeholder="Photo">
         <input type="number" name="itemQuantity" placeholder="Quantity" value="">
-        <!-- <input type="button" value="Submit"> -->
         <button type="submit" name="list" value="item">+</button>
     </form>
 </div>
 
-<div class="box">
-    <!-- <form class="" action="/viewItems" method="post">
-        <button type="button" name="View All items">+</button>
-    </form> -->
-    <%for (var i = 0; i < product.length; i++){%>
-    <div class="item">
-        <p><%=product[i].title%></p>
-        <p><%=product[i].description%></p>
-        <p><%=product[i].quantity%></p>
-        <p><%=product[i].image%></p>
-        <picture>
-            <img src="/uploads/image.png" />
-        </picture>
-    </div>
-    <%}%>
+<div class="container container-fluid">
+<table class="table table-sm" style="width: auto;">
+    <thead>
+        <tr class="d-flex">
+          <th class="col-1" scope="col">#</th>
+          <th class="col-1" scope="col">Title</th>
+          <th class="col-4" scope="col">Description</th>
+          <th class="col-1" scope="col">Quantity</th>
+          <th class="col-5 text-center" scope="col">Photo</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%for (var i = 0; i < product.length; i++){%>
+        <tr class="d-flex">
+            <th class="col-1" scope="row"><%=i+1%></th>
+            <td class="col-1"><%=product[i].title%></td>
+            <td class="col-4"><%=product[i].description%></td>
+            <td class="col-1"><%=product[i].quantity%></td>
+            <td class="col-5">
+                <img class="rounded mx-auto d-block" src=<%="/uploads/"+product[i].image%> />
+            </td>
+        </tr>
+        <%}%>
+    </tbody>
+</table>
 </div>
 
 <%- include('footer') -%>

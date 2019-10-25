@@ -62,32 +62,33 @@ app.post('/',
     // products.push({title: title, description: description, quantity: quantity});
     // console.log(products);
 
-    upload.single("file" /* name attribute of <file> element in your form */),
+    upload.single("file"),
     (req, res) => {
 
+        let title = req.body.itemTitle;
+        let description = req.body.itemDescription;
+        let quantity = req.body.itemQuantity;
+        products.push({title: title, description: description, quantity: quantity, image: req.file.originalname});
+        console.log(req.file.originalname);
         const tempPath = req.file.path;
         const targetPath = path.join(__dirname, "./public/uploads/" + req.file.originalname );
-        console.log(targetPath);
+
         if (path.extname(req.file.originalname).toLowerCase() === ".png") {
             fs.rename(tempPath, targetPath, err => {
               if (err) return handleError(err, res);
-
               res
                 .status(200)
-                .contentType("text/plain")
-                .end("File uploaded!");
+                .redirect('/');
             });
         } else {
             fs.unlink(tempPath, err => {
               if (err) return handleError(err, res);
-
               res
                 .status(403)
                 .contentType("text/plain")
                 .end("Only .png files are allowed!");
             });
         }
-        res.redirect('/');
 }
 );
 

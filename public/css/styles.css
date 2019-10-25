@@ -11,8 +11,12 @@ h1 {
 }
 
 img {
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
+}
+
+body {
+    background-color: transparent;
 }
 
 .box {
