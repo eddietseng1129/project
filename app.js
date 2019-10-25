@@ -40,23 +40,6 @@ const product = new Product({
     quantity: 0,
 });
 
-// product.save(function(err){
-//     if (err) {
-//         console.log('Something is wrong!');
-//     } else {
-//         console.log('Successfully uploaded default to DB.');
-//     }
-// });
-
-// const products = [
-//     {
-//         title: 'TestTitle',
-//         description: 'TestDescription',
-//         quantity: 'TestQuantity',
-//         image: 'TestImage'
-//     }
-// ];
-
 const handleError = (err, res) => {
   res
     .status(500)
@@ -94,15 +77,13 @@ app.post('/',
         let title = req.body.itemTitle;
         let description = req.body.itemDescription;
         let quantity = req.body.itemQuantity;
-        // products.push({title: title, description: description, quantity: quantity, image: req.file.originalname});
+
         const product = new Product({
             title: title,
             description: description,
             quantity: quantity,
             image: {data: fs.readFileSync(req.file.path), contentType: req.file.originalname}
         });
-        // console.log(req.file.path);
-        // console.log(req.file.originalname);
 
         product.save();
 
