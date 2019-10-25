@@ -6,6 +6,7 @@ const http = require('http');
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+const mongoose = require('mongoose');
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -15,21 +16,46 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-
 app.set('view engine', 'ejs');
 
-const titles = ['test'];
-const descriptions = [];
-const quantities = [];
+mongoose.connect('mongodb+srv://admin-eddie:Test123@cluster0-afo4z.mongodb.net/itemsDB', {useNewUrlParser: true});
 
-const products = [
-    {
-        title: 'TestTitle',
-        description: 'TestDescription',
-        quantity: 'TestQuantity',
-        image: 'TestImage'
-    }
-];
+const productsSchema = new mongoose.Schema ({
+    title: String,
+    description: String,
+    quantity: Number,
+    image: { data: Buffer, contentType: String }
+});
+
+const imagesSchema = new mongoose.Schema ({
+    img: { data: Buffer, contentType: String }
+});
+
+const Product = mongoose.model("Product", productsSchema);
+const Image = mongoose.model("Image", imagesSchema);
+
+const product = new Product({
+    title: 'TestTitle',
+    description: 'TestDescription',
+    quantity: 0,
+});
+
+// product.save(function(err){
+//     if (err) {
+//         console.log('Something is wrong!');
+//     } else {
+//         console.log('Successfully uploaded default to DB.');
+//     }
+// });
+
+// const products = [
+//     {
+//         title: 'TestTitle',
+//         description: 'TestDescription',
+//         quantity: 'TestQuantity',
+//         image: 'TestImage'
+//     }
+// ];
 
 const handleError = (err, res) => {
   res
@@ -39,37 +65,47 @@ const handleError = (err, res) => {
 };
 
 const upload = multer({
-  dest: "./project/public"
-  // you might also want to set some limits: https://github.com/expressjs/multer#limits
+  dest: "./public"
 });
 
 app.get("/", express.static(path.join(__dirname, "./public")));
 
 app.get('/', function(req, res){
     let day = date.getDate();
-    res.render("list", {listTitle: day, product: products});
+    Product.find({}, function(err, foundProduct){
+        if (foundProduct.length === 0) {
+            product.save(function(err){
+                if (err) {
+                    console.log('Something is wrong!');
+                } else {
+                    console.log('Successfully uploaded default to DB.');
+                }
+            });
+            res.redirect('/');
+        } else {
+            res.render("list", {listTitle: day, product: foundProduct});
+        }
+    });
 });
 
 app.post('/',
-
-    // console.log(req);
-    // let title = req.body.itemTitle;
-    // let description = req.body.itemDescription;
-    // let quantity = req.body.itemQuantity;
-    // console.log(title);
-    // console.log(description);
-    // console.log(quantity);
-    // products.push({title: title, description: description, quantity: quantity});
-    // console.log(products);
-
     upload.single("file"),
     (req, res) => {
-
         let title = req.body.itemTitle;
         let description = req.body.itemDescription;
         let quantity = req.body.itemQuantity;
-        products.push({title: title, description: description, quantity: quantity, image: req.file.originalname});
-        console.log(req.file.originalname);
+        // products.push({title: title, description: description, quantity: quantity, image: req.file.originalname});
+        const product = new Product({
+            title: title,
+            description: description,
+            quantity: quantity,
+            image: {data: fs.readFileSync(req.file.path), contentType: req.file.originalname}
+        });
+        // console.log(req.file.path);
+        // console.log(req.file.originalname);
+
+        product.save();
+
         const tempPath = req.file.path;
         const targetPath = path.join(__dirname, "./public/uploads/" + req.file.originalname );
 
@@ -89,7 +125,7 @@ app.post('/',
                 .end("Only .png files are allowed!");
             });
         }
-}
+    }
 );
 
 app.listen(3000, function(){

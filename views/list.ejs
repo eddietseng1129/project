@@ -8,15 +8,15 @@
     <form class="box" action="/" method="post" enctype="multipart/form-data">
         <input type="text" name="itemTitle" placeholder="Title" value="">
         <input type="text" name="itemDescription" placeholder="Description" value="">
-        <input type="file" name="file" placeholder="Photo">
         <input type="number" name="itemQuantity" placeholder="Quantity" value="">
+        <input type="file" name="file" placeholder="Photo">
         <button type="submit" name="list" value="item">+</button>
     </form>
 </div>
 
 <div class="container container-fluid">
-<table class="table table-sm" style="width: auto;">
-    <thead>
+<table class="table table-light">
+    <thead class="thead-dark">
         <tr class="d-flex">
           <th class="col-1" scope="col">#</th>
           <th class="col-1" scope="col">Title</th>
@@ -33,7 +33,7 @@
             <td class="col-4"><%=product[i].description%></td>
             <td class="col-1"><%=product[i].quantity%></td>
             <td class="col-5">
-                <img class="rounded mx-auto d-block" src=<%="/uploads/"+product[i].image%> />
+                <img class="rounded mx-auto d-block" src="./uploads/<%=product[i].image.contentType%>" alt="image" />
             </td>
         </tr>
         <%}%>
