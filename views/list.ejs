@@ -1,0 +1,35 @@
+<%- include('header') -%>
+
+<div class="box" id="heading">
+    <h1><%=listTitle%></h1>
+</div>
+
+<div class="box">
+    <form class="box" action="/" method="post" enctype="multipart/form-data">
+        <input type="text" name="itemTitle" placeholder="Title" value="">
+        <input type="text" name="itemDescription" placeholder="Description" value="">
+        <input type="file" name="file" placeholder="Photo">
+        <input type="number" name="itemQuantity" placeholder="Quantity" value="">
+        <!-- <input type="button" value="Submit"> -->
+        <button type="submit" name="list" value="item">+</button>
+    </form>
+</div>
+
+<div class="box">
+    <!-- <form class="" action="/viewItems" method="post">
+        <button type="button" name="View All items">+</button>
+    </form> -->
+    <%for (var i = 0; i < product.length; i++){%>
+    <div class="item">
+        <p><%=product[i].title%></p>
+        <p><%=product[i].description%></p>
+        <p><%=product[i].quantity%></p>
+        <p><%=product[i].image%></p>
+        <picture>
+            <img src="/uploads/image.png" />
+        </picture>
+    </div>
+    <%}%>
+</div>
+
+<%- include('footer') -%>
